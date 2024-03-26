@@ -1,27 +1,27 @@
 [package]
-authors = ["tu6ge <772364230@qq.com>"]
-description = "Auto Publish Cargo with Github Action"
+authors = ["hubertshelley <hubertshelley@163.com>"]
+description = "Auto Publish Cargo with Github Action fork from tu6ge/publish-action"
 edition = "2021"
 keywords = ["github-action", "cargo", "CI-CD", "publish"]
 license = "MIT"
-name = "publish-action"
-repository = "https://github.com/tu6ge/publish-action"
+name = "publish-action-p"
+repository = "https://github.com/hubertshelley/publish-action"
 version = "0.2.3"
 
 [[bin]]
-name = "publish-action"
+name = "publish-action-p"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.66"
-cargo = "0.75.0"
-futures = "0.3.21"
-serde_json = "1.0.95"
+anyhow = "1.0.81"
+cargo = "0.78.0"
+futures = "0.3.30"
+serde_json = "1.0.115"
 thiserror = "1.0"
 #openssl = "0.10.40"
-reqwest = { version = "0.11.10", features = ["blocking", "json"] }
+reqwest = { version = "0.12.2", features = ["blocking", "json"] }
 
 [dev-dependencies]
 dotenv = "0.15.0"
-tempfile = "3.5.0"
+tempfile = "3.10.1"
