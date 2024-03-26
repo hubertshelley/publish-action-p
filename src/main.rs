@@ -91,8 +91,13 @@ fn get_publication_status(
     cargo_toml.push("Cargo.toml");
     cargo_toml = cargo_toml.canonicalize()?;
     let workspace = Workspace::new(&cargo_toml, &config)?;
-
-    let package = workspace.current()?;
+    let project = env::var("PROJECT").ok();
+    let package = match project {
+        None => { workspace.current()? }
+        Some(project) => {
+            workspace.default_members().find(|p| p.name().to_string() == project).ok_or(Perror::Input("project not found".to_string()))?
+        }
+    };
     // Find where to publish
     let publish_registries = package.publish();
     let publish_registries = match publish_registries {
@@ -102,7 +107,7 @@ fn get_publication_status(
     if publish_registries.is_empty() {
         return Err(Perror::PublishingDisabled);
     }
-    let _lock = config.acquire_package_cache_lock(CacheLockMode::Shared)?;
+    let _lock = config.acquire_package_cache_lock(CacheLockMode::MutateExclusive)?;
     // now - for each publication target, check whether it has this version (or newer)
     let mut statuses = Vec::with_capacity(publish_registries.len());
     for registry in publish_registries {
@@ -142,7 +147,7 @@ fn get_publication_status(
     ))
 }
 
-fn set_output(info: &'static str) {
+fn set_output(println: &'static str) {
     use std::fs;
     use std::io::Write;
 
@@ -152,7 +157,7 @@ fn set_output(info: &'static str) {
         .write(true)
         .open(path)
         .expect("open GITHUB_OUTPUT file failed");
-    file.write_all(info.as_bytes())
+    file.write_all(println.as_bytes())
         .expect("write output content faild");
     file.write_all(b"\n").expect("write output \n faild");
 }
