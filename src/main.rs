@@ -8,6 +8,7 @@ use cargo::{
     core::{Dependency, Registry, SourceId, Workspace},
     sources::source::QueryKind,
 };
+use cargo::util::cache_lock::CacheLockMode;
 #[cfg(test)]
 use dotenv::dotenv;
 
@@ -101,7 +102,7 @@ fn get_publication_status(
     if publish_registries.is_empty() {
         return Err(Perror::PublishingDisabled);
     }
-    let _lock = config.acquire_package_cache_lock()?;
+    let _lock = config.acquire_package_cache_lock(CacheLockMode::Shared)?;
     // now - for each publication target, check whether it has this version (or newer)
     let mut statuses = Vec::with_capacity(publish_registries.len());
     for registry in publish_registries {
@@ -125,7 +126,7 @@ fn get_publication_status(
         };
         let matched = summaries
             .iter()
-            .filter(|s| s.version() == package.version())
+            .filter(|s| s.as_summary().version() == package.version())
             .count()
             > 0;
         statuses.push(if matched {
