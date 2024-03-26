@@ -6,7 +6,7 @@ keywords = ["github-action", "cargo", "CI-CD", "publish"]
 license = "MIT"
 name = "publish-action-p"
 repository = "https://github.com/hubertshelley/publish-action"
-version = "0.2.4"
+version = "0.2.5"
 
 [[bin]]
 name = "publish-action-p"
