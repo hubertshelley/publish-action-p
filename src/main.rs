@@ -52,14 +52,18 @@ fn main() -> Presult<()> {
     //println!("::set-output name=new_version::true");
     set_output("new_version=true");
     println!("version not published");
-    let args = match project {
-        Some(p) => format!("publish -p {}", p),
-        None => "publish".to_string(),
+    let com_res = match project {
+        Some(p) => Command::new("cargo")
+            .arg("publish")
+            .arg("-p")
+            .arg(&p)
+            .current_dir(&path)
+            .status()?,
+        None => Command::new("cargo")
+            .arg("publish")
+            .current_dir(&path)
+            .status()?,
     };
-    let com_res = Command::new("cargo")
-        .arg(args)
-        .current_dir(&path)
-        .status()?;
     if !com_res.success() {
         //println!("::set-output name=publish::false");
         set_output("publish=false");
